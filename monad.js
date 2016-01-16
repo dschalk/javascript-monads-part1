@@ -16,7 +16,7 @@ var Monad = function Monad(z) {
       args[_key - 1] = arguments[_key];
     }
 
-    return func.apply(undefined, [_this.x, _this].concat(args));
+    return func.apply(undefined, [_this].concat(args));
   };
 
   this.ret = function (a) {
@@ -83,7 +83,7 @@ var MonadIter = function MonadIter(z, g) {
 
     var self = _this2;
     if (self.flag === false) {
-      func.apply(undefined, [self.x, self].concat(args));
+      func.apply(undefined, [self].concat(args));
       return self;
     }
     if (self.flag === true) {
@@ -166,7 +166,7 @@ var mM7 = M(0);
 var mM8 = M(0);
 var mM9 = M(0);
 var mM10 = M(0);
-
+var hello = M(42);
 var MI = function MI(a, b) {
   return new MonadIter(a, b);
 };
@@ -178,32 +178,32 @@ var mMI4 = MI(0, 'mMI4');
 var mMI5 = MI(0, 'mMI5');
 var mMI6 = MI(0, 'mMI6');
 
-var doub = function doub(x, mon) {
+var doub = function doub(mon) {
   mon.ret(mon.x + mon.x);
   return mon;
 };
 
-var square = function square(x, mon) {
+var square = function square(mon) {
   mon.ret(mon.x * mon.x);
   return mon;
 };
 
-var tripple = function tripple(x, mon) {
+var tripple = function tripple(mon) {
   mon.ret(mon.x + mon.x + mon.x);
   return mon;
 };
 
-function cube(x, mon) {
+function cube(mon) {
   mon.ret(mon.x * mon.x * mon.x);
   return mon;
 };
 
-var add = function add(x, mon, y) {
+var add = function add(mon, y) {
   mon.ret(mon.x + y);
   return mon;
 };
 
-var mult = function mult(x, mon, y) {
+var mult = function mult(mon, y) {
   mon.ret(mon.x * y);
   return mon;
 };
@@ -212,12 +212,12 @@ var rand = function rand(a, b) {
   return Math.floor(Math.random() * (a - b)) + b;
 };
 
-var ran = function ran(x, mon) {
+var ran = function ran(mon) {
   mon.ret(Math.floor(Math.random() * -4 + 5));
   return mon;
 };
 
-var chance = function chance(x, mon) {
+var chance = function chance(mon) {
   var a = rand(1, 5);
   var b = rand(1, 5);
   var c = rand(1, 5);
@@ -236,7 +236,7 @@ var chance = function chance(x, mon) {
   return mon;
 };
 
-var ch = function ch(x, mon, a, b, c) {
+var ch = function ch(mon, a, b, c) {
   if (a === b && a === c) {
     mon.ret('Winner! Three of a kind');
     return mon;
@@ -249,7 +249,7 @@ var ch = function ch(x, mon, a, b, c) {
   return mon;
 };
 
-var jackpot = function jackpot(x, mon) {
+var jackpot = function jackpot(mon) {
   var k = 1;
   for (k; k < 5; k += 1) {
     if (x === [k, k, k, k, k, k]) {
@@ -261,7 +261,7 @@ var jackpot = function jackpot(x, mon) {
   return mon;
 };
 
-var bench = function bench(x, mon) {
+var bench = function bench(mon) {
   var self = undefined;
   var k = 0;
   var j = 0;
@@ -306,19 +306,19 @@ var lo = function lo(x) {
   return console.log(x);
 };
 
-var block = function block(x, mon, mon2) {
+var block = function block(mon, mon2) {
   mon2.flag = true;
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$', mon2.id, mon2.x, mon2.flag);
   return mon;
 };
 
-var release = function release(x, mon, mon2) {
+var release = function release(mon, mon2) {
   mon2.flag = false;
   console.log('***************************', mon2.id, mon2.x, mon2.flag);
   return mon;
 };
 
-var delay = function delay(x, mon) {
+var delay = function delay(mon) {
   return new Promise(function (resolve, reject) {
     setTimeout(resolve, 2000);
   });

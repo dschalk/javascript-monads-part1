@@ -7,7 +7,7 @@ const monad = h('pre', {style: {color: '#AFEEEE' }}, `  class Monad {
       this.x = z;
 
       this.bnd = (func, ...args) => {
-        func(this.x, this, ...args);
+        func(this, ...args);
       };
 
       this.ret = a => {
@@ -24,7 +24,68 @@ const monad = h('pre', {style: {color: '#AFEEEE' }}, `  class Monad {
   };
 ` );  
   
-const monadIter = h('pre', {style: {color: '#AFEEEE' }}, `    class MonadIter {
+const monadIter = h('pre', {style: {color: '#AFEEEE' }}, `  class MonadIter {
+    constructor(z,g) {
+      this.x = z;
+      this.id = g;
+      this.p = [];
+      this.block = () => {
+        this.x = true;
+        return this;
+        }
+      this.release = () => {
+        this.x = false;
+        let self = this;
+        let p = this.p;
+        if (p[1] === 'bnd') {
+          p[2](self.x, self, ...p[3]);
+          return self;
+        }
+        if (p[1] === 'ret') {
+          self.x = p[2];
+          return self;
+        }
+        if (p[1] === 'fmap') { 
+          p[3].ret(p[2](p[3].x, ...p[4]));
+          return p[3];
+        }
+     }
+      this.bnd = (func, ...args) => {
+        let self = this;
+        if (self.x === false) {
+          func(self, ...args);
+          return self;
+        }
+        if (self.x === true) {
+          self.p = [self.id, 'bnd', func, args];
+          return self;
+        }
+      }
+      this.fmap = (f, mon = this, ...args) => {   
+        let self = this;
+          if (self.x === false) {
+            mon.ret(f(mon.x,  ...args));
+            return mon;
+          }
+          if (self.x === true) {
+            self.p = [self.id, 'fmap', f, mon, args];
+            return self;
+          }
+      }
+      this.ret = a => { 
+        let self = this;
+          if (self.x === false) {
+            self.x = a;
+          }
+          if (self.x === true) {
+          self.p = [self.id, 'ret', a];
+          return self;
+          }
+        this.x = false;
+        return this;
+      }
+    }
+  }
     constructor(z,g) {
 
         this.x = z;
@@ -86,7 +147,7 @@ mM8.bnd(mM4.ret);` );
 
 const functions1 = h('pre', {style: {color: '#AFEEEE' }}, 
 `
-var cube = function cube(x, mon) {
+var cube = function cube(mon) {
   mon.ret(mon.x * mon.x * mon.x);
   return mon;
 };

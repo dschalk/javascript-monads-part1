@@ -47,7 +47,7 @@ var styleR = style2;
 var styleRe = style1;
 var styleRl = style2;
 
-function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2) { 
+function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) { 
     return h('div',{style: style3}, 
     [  h('div',{style: { width: '65%', textAlign: 'left', marginLeft: 40, marginRight: '17%', fontSize: '24px'}}, 
     [ h('h2', {style: {textAlign: 'center', color:  '#BBFFFF'}}, 'Fun With Monads - UNDER RECONSTRUCTION'),
@@ -59,31 +59,35 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2) {
      h('p', 'This project centers around a simple monad constructor, called "Monad", and the more elaborate MonadIter constructor whose instances can take control of the order of execution of monad trees, wait for asynchronous events to complete, and interactively step through sequences. They do some things that ES6 Promises and Generators do, but in different ways, and are by no means meant as a replacement for them. ' ),
     h('p', ' Here is how the Monad class is defined:'),
       cow.monad,
-      h('p', 'The monads are rich in possiblities. You\'ve heard the expression, "Garbage in, garbage out". The bnd method does not screen the functions it receives as arguments. It might return NAN or undefined; it might return nonsense; but given the right functions, bnd can support elegant solutions to problems. We will explore the nuances of fine-tuning functions for the bnd method with the following functions.' ),
+    h('p', 'And here are the functions we will use in this brief demonstration: '  ),  
       cow.functions1,
-      h('p', 'Note that when the bnd method calls these functions, we do not specify the "x" and "mon" parameters of the functions because bnd provides the calling monad\'s value and its self to the function. So if we want to cube a modad\'s value, we just write ".bnd(cube), and if we want to add 1, we write ".bnd(add,1). Any extra arguments would be ignored by "cube", but "add" would fail because the number to be added would be push out of place and replaced by the value of the calling monad. So, no matter what you tried to add, the calling monad\'s value would always double. '  ),
-
-      h('h3',  'Why Not Use "x" Instead of "mon.x" in the Bodies of Functions?' ),
-      h('p', 'You might have noticed that "x" and "mon.x" are identical values in the function bodies of add and cube. Why not save key strokes and use "x". You can define the functions that way, and they will usually work but will not be so robust. Consider: ' ),
-     h('pre', 
-`    mM1.ret(0); 
-    cube( mM1.x, (mM1.bnd(add,3) ))
-    cube(0,mM1)`   ),
-   h('p', 'When cube evaluates its arguments, the left value is still "0" but the right value is mM1 with a value of 3. You get 0 or 27, depending on whether cube(x,mon) cubes x or mon. We could throw in boilerplate to make mM1.x listen for changes, but "monad.bnd(add,3).bnd(cube)" is a better way to add three to a monad\'s value and then cube it. When coders get playful and creative, API\'s should be as robust as possible. One way to insure robustness is refrain from using the "x" in function(x,mon). I used Facebook\'s React for a while and felt what it must be like to work with many other coders in an organization determined to minimize bugs and security holes. So much so that I spent hours trying to include HTML in the "render" function, finally giving up and inserting multiple multiple components. It is such a relief to be using Snabbdom. I highly recommend it.'  ),
-   h('h3', 'Why Have the "x" if You Don\t Use It?'  ),
+    h('p', 'These are simple math functions operating on monads with number values. The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations, so there is a one to one corresponsdence between the set of all possible javascript values and all possible monads.'  ), 
+   h('h3', 'Do monads support lambda expressions?'  ),
    h('p', 'Click below to see the answer.'  ),
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo1 }, style: style4}, [
     cow.lambdas] ),
    h('p', 'Or, putting it more succinctly,'  ), 
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: update2 }, style: style5},
                `mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))`  ),
-   h('p', 'bnd sends the first argument it encounters down the chain of monads. If it sent the calling monad rather than its value, the final line in the big answer above would have to be "x.x * y.x * z.x". Hmmm. That wouldn\'t be so bad. Back to the drawing board.
+   h('p', 'bnd sends itself down the chain of monads. It can change the values of other monads and have its value changed along the way. '  ),
       h('h3',  'How The Simple Monads Work' ),
-
-
-      
+      h('p', 'If setting mM1 to 0, adding 3, and cubing it to give mM1 a value of 27 this way ' ),
+      h('pre', `mM1.ret(0).bnd(add,3).bnd(cube)`  ), 
+      h('p', 'is too object-oriented for any of you functional programming zealots, you can avoid object methods by doing it this way: ' ),
+      h('pre',
+`mM1.ret(0)
+cube(add(mM1,3)
+`           ),    
+      h('p', ' "mM1.bnd(cube)" does exactly what "cube(mM1)" does. They both return mM1 after cubing its value, or return mM1 with a value of NAN if its value was not a number. '   ),
+  
+      h('p', 'Before wrapping up this first installment, I think I should provide a "Hello world." program. Here it is: '  ),
+   h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateHello }, style: style5}, [
+   h('pre',
+`var hello = new Monad;
+hello.ret('Hello world);   
+`    ),     ] ),
+      h('p', 'Bye for now.'  ),
       h('h3', 'Next: Websocket interractions with MonadIter instances. ' ),
-
 
 
       h('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed . If the computations along the chain manipulate only monadic values, with a possible side effect only at the last link, we can use only pure (side-effect free) functions outside of the Monad and MonadIter classes. We could also refrain from mutating values outside of the monad world. What we would gain and what we would lose are hard to know from this theoretical vantage point, so in some future installment in this series, I will dig in and do some experimenting. "Fun with monads"? Well, I\'m having fun.  ' ),
@@ -128,6 +132,7 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2) {
           h('span', 'mMI2.x: '),
           h('span', {style: styleMI}, '  ' + mI1),
           h('br'),
+          h('span', {style: styleMI}, '  ' + hello),
           h('br'),
           h('br'),
       h('button', {on: { mouseenter: updateRe, mouseleave: updateRl, click: updateR }, style: styleR},
@@ -138,7 +143,7 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2) {
 
 
 function update0(event) {
-  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x);
+  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x, hello.x);
   oldVnode = patch(oldVnode, newVnode);
 }
 
@@ -154,7 +159,7 @@ function update(event) {
 }
 
 function update2(event) {
-  mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))
+  mM1.ret(6).bnd(x => mM2.ret(7).bnd(y => mM3.ret(x.x * y.x)))
   update0();
 }
 // ((((((((((***********************************************************
@@ -168,19 +173,24 @@ function updateDemo1() {
      .bnd(x => mM2
      .bnd(y => mM3
      .bnd(z => mM4
-     .ret(x*y*z) 
+     .ret(x.x*y.x*z.x) 
      .bnd(() => mM5.ret('Lambda!')           
         ))))))
   update0();
 }
 
+function updateHello() {
+  hello.ret('Hello world.'); 
+  update0();
+}
+
 function updateDemo2() {
-  addL(3, mM1)
+  add(3, mM1)
   update0();
 }
 
 function updateDemo3() {
-  addR(3, mM1)
+  add(3, mM1)
   update0();
 }
 
