@@ -52,7 +52,7 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) {
     [  h('div',{style: { width: '65%', textAlign: 'left', marginLeft: 40, marginRight: '17%', fontSize: '24px'}}, 
     [ h('h2', {style: {textAlign: 'center', color:  '#BBFFFF'}}, 'Fun With Monads - UNDER RECONSTRUCTION'),
       h('span', {style: {marginLeft: '18px'}},  'The code for this single-page site is at ' ),
-      h('a', {props: {href: 'https://github.com/dschalk/fun-with-monads'}, style: {color: '#EECCFF'}}, 'fun_with_monads' ),
+      h('a', {props: {href: 'https://github.com/dschalk/javascript-monads-part1'}, style: {color: '#EECCFF'}}, 'fun_with_monads' ),
       h('span', ' If pressing F12 switches your browser to a console, I think you will find that you have access to all of the monads and functions being used in this presentation, Try entering "mM1.ret("Hello world")" on the command like. Press F12 again and roll over (don\'t click it) the RE-SET button at the bottom of the right column. When the column gets updated, the new value of mM1.x that you created should appear. '  ),
       h('h3', 'This Series Is For Web Developers' ),
      h('p', 'This is not about category theory or the lambda calculus. I call my little inventions "monads", and I am sorry if that drives away that dwindling breed of developers who strive for little more than to master JQuery and whatever frameword they are using. I developed the manads to make my work easier and more satisfying, and now I am taking time out to share them with whomever is interested. ' ),
@@ -68,37 +68,32 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) {
     cow.lambdas] ),
    h('p', 'Or, putting it more succinctly,'  ), 
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: update2 }, style: style5},
-               `mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))`  ),
+               'mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))'  ),
    h('p', 'bnd sends itself down the chain of monads. It can change the values of other monads and have its value changed along the way. '  ),
       h('h3',  'How The Simple Monads Work' ),
       h('p', 'If setting mM1 to 0, adding 3, and cubing it to give mM1 a value of 27 this way ' ),
-      h('pre', `mM1.ret(0).bnd(add,3).bnd(cube)`  ), 
+      h('pre', 'mM1.ret(0).bnd(add,3).bnd(cube)'  ), 
       h('p', 'is too object-oriented for any of you functional programming zealots, you can avoid object methods by doing it this way: ' ),
       h('pre',
-`mM1.ret(0)
-cube(add(mM1,3)
-`           ),    
-      h('p', ' "mM1.bnd(cube)" does exactly what "cube(mM1)" does. They both return mM1 after cubing its value, or return mM1 with a value of NAN if its value was not a number. '   ),
-  
+'   cube(add(add(mM1,-mM1.x),3))  '           ),    
+      h('p', ' "mM1.bnd(cube)" does exactly what "cube(mM1)" does. They both return mM1 after cubing its value, or return mM1 with a value of NAN if its value was not a number. In the above expression, the innermost call to "add" sets mM1.x to 0; the next call adds 3, and cube yields mM1.x = 27, no matter what the value of mM1 was before. The above expression can make a person cross-eyed, so I will stick with linking objects when nesting operations.'   ),
       h('p', 'Before wrapping up this first installment, I think I should provide a "Hello world." program. Here it is: '  ),
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateHello }, style: style5}, [
    h('pre',
 `var hello = new Monad;
-hello.ret('Hello world);   
-`    ),     ] ),
+hello.ret('Hello world');`   
+    ),     ] ),
       h('p', 'Bye for now.'  ),
       h('h3', 'Next: Websocket interractions with MonadIter instances. ' ),
-
-
       h('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed . If the computations along the chain manipulate only monadic values, with a possible side effect only at the last link, we can use only pure (side-effect free) functions outside of the Monad and MonadIter classes. We could also refrain from mutating values outside of the monad world. What we would gain and what we would lose are hard to know from this theoretical vantage point, so in some future installment in this series, I will dig in and do some experimenting. "Fun with monads"? Well, I\'m having fun.  ' ),
         
       h('span','The open source code for this page is at '  ),  
-      h('a', {props: {href: 'https://github.com/dschalk/fun-with-monads'}, style: {color: '#EECCFF'}}, 'fun_with_monads' ),
+      h('a', {props: {href: 'https://github.com/dschalk/javascript-monads-part1'}, style: {color: '#EECCFF'}}, 'fun_with_monads' ),
       h('span', '  Demonstrations of this and the next pages in "Javascript Monads" project can be found at ',   ),
       h('a', {props: {href: 'http://schalk.net'}, style: {color: '#EECCFF'}}, 'schalk.net' ),
       h('br', ),   
       h('div', {style: {height: '300px'}} ),
-        ] ), 
+   ] ), 
       h ('div',{style: { width: '30%', position: 'fixed', top: '200px', right: '15px', color: '#CCFDDA'}},
         [
           h('br'),
@@ -132,11 +127,12 @@ hello.ret('Hello world);
           h('span', 'mMI2.x: '),
           h('span', {style: styleMI}, '  ' + mI1),
           h('br'),
+          h('span', 'hello.x: '),
           h('span', {style: styleMI}, '  ' + hello),
           h('br'),
           h('br'),
       h('button', {on: { mouseenter: updateRe, mouseleave: updateRl, click: updateR }, style: styleR},
-                     `RE-SET`   )           
+                     'RE-SET'   )           
         ] )        
     ] )
 }  
