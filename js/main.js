@@ -67,7 +67,7 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) {
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo1 }, style: style4}, [
     cow.lambdas] ),
    h('p', 'Or, putting it more succinctly,'  ), 
-   h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: update2 }, style: style5},
+   h('button', {on: { mouseenter: update5e, mouseleave: update5l, click: update2 }, style: style5},
                'mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))'  ),
    h('p', 'bnd sends itself down the chain of monads. It can change the values of other monads and have its value changed along the way. '  ),
       h('h3',  'How The Simple Monads Work' ),

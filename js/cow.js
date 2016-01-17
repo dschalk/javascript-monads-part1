@@ -152,7 +152,7 @@ var cube = function cube(mon) {
   return mon;
 };
 
-var add = function add(x, mon, y) {
+var add = function add(mon, y) {
   mon.ret(mon.x + y);
   return mon;
 };
